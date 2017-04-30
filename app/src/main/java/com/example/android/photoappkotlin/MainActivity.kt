@@ -1,5 +1,6 @@
 package com.example.android.photoappkotlin
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -19,7 +20,7 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     var photos: List<Photo>? = null
-    var mainAdapter: MainAdapter?= null
+    var mainAdapter: MainAdapter? = null
     lateinit var recyclerView: RecyclerView
 
 
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         var retriever = PhotoRetriever()
-        val callback = object : Callback<PhotoList>{
+        val callback = object : Callback<PhotoList> {
             override fun onResponse(call: Call<PhotoList>?, response: Response<PhotoList>?) {
                 response?.isSuccessful.let {
                     this@MainActivity.photos = response?.body()?.hits
@@ -58,7 +59,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(view: View?) {
+        val intent = Intent(this, DetailActivity::class.java)
+        val holder = view?.tag as MainAdapter.PhotoViewHolder
 
+        intent.putExtra(
+                DetailActivity.PHOTO,
+                mainAdapter?.getPhoto(holder.adapterPosition))
+        startActivity(intent)
     }
 
 
